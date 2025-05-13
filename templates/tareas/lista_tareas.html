@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Mis Tareas</h2>
+    
+    <a href="{% url 'agregar_tarea' %}" class="btn btn-primary">Agregar Tarea</a>
+
+    <form method="get" class="d-flex mb-3">
+        <input type="text" name="buscar" class="form-control me-2" placeholder="Buscar..." value="{{ buscar_actual }}">
+        <input type="hidden" name="estado" value="{{ estado_actual }}">
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+    
+    <div class="mb-3">
+        <a href="?estado=" class="btn btn-outline-secondary {% if not estado_actual %}active{% endif %}">Todas</a>
+        <a href="?estado=pendientes{% if buscar_actual %}&buscar={{ buscar_actual }}{% endif %}" class="btn btn-outline-warning {% if estado_actual == 'pendientes' %}active{% endif %}">Pendientes</a>
+        <a href="?estado=completadas{% if buscar_actual %}&buscar={{ buscar_actual }}{% endif %}" class="btn btn-outline-success {% if estado_actual == 'completadas' %}active{% endif %}">Completadas</a>
+    </div>
+    <div class="mb-3">
+        <strong>Ordenar por:</strong>
+        <a href="?orden=recientes{% if estado_actual %}&estado={{ estado_actual }}{% endif %}{% if buscar_actual %}&buscar={{ buscar_actual }}{% endif %}" class="btn btn-sm btn-outline-primary {% if orden_actual != 'antiguas' %}active{% endif %}">
+            Más recientes
+        </a>
+        <a href="?orden=antiguas{% if estado_actual %}&estado={{ estado_actual }}{% endif %}{% if buscar_actual %}&buscar={{ buscar_actual }}{% endif %}" class="btn btn-sm btn-outline-primary {% if orden_actual == 'antiguas' %}active{% endif %}">
+            Más antiguas
+        </a>
+    </div>
+    
+    
+
+    <ul class="list-group">
+        
+        {% for tarea in tareas %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+                <strong>{{ tarea.titulo }}</strong><br>
+                <small>{{ tarea.descripcion|default:"No hay descripción" }}</small><br>
+                <small><em>Creada: {{ tarea.creada }}</em></small>
+            </div>
+            <div>
+                {% if not tarea.completada %}
+                    <a href="{% url 'completar_tarea' tarea.id %}" class="btn btn-sm btn-success">Marcar como completada</a>
+                {% else %}
+                    <span class="badge bg-success">Completada</span>
+                {% endif %}
+                <a href="{% url 'eliminar_tarea' tarea.id %}" class="btn btn-sm btn-outline-danger ms-2">Eliminar</a>
+                <a href="{% url 'editar_tarea' tarea.id %}" class="btn btn-sm btn-outline-primary ms-2">Editar</a>
+            </div>            
+            
+        </li>
+        {% empty %}
+            <li class="list-group-item">No tenés tareas todavía.</li>
+        {% endfor %}
+    </ul>
+
+    <nav aria-label="Paginación">
+        <ul class="pagination justify-content-center mt-4">
+            {% if tareas.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% if request.GET.buscar %}buscar={{ request.GET.buscar }}&{% endif %}page={{ tareas.previous_page_number }}">Anterior</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Anterior</span></li>
+            {% endif %}
+    
+            <li class="page-item disabled"><span class="page-link">Página {{ tareas.number }} de {{ tareas.paginator.num_pages }}</span></li>
+    
+            {% if tareas.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% if request.GET.buscar %}buscar={{ request.GET.buscar }}&{% endif %}page={{ tareas.next_page_number }}">Siguiente</a>
+                </li>
+            {% else %}
+                <li class="page-item disabled"><span class="page-link">Siguiente</span></li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endblock %}
+
