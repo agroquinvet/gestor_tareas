@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$m-kn$x11san03orafk*(un4zlay-+u$g=7d@wl9&(w8^hz=v&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -127,8 +127,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_URL = 'login'
 
-LOGIN_REDIRECT_URL = '/'  # Esto define a dónde ir después de iniciar sesión
+LOGIN_REDIRECT_URL = 'lista_tareas'  # Esto define a dónde ir después de iniciar sesión
 LOGOUT_REDIRECT_URL = 'login'  # Esto define a dónde ir después de cerrar sesión (a la página de login)
 
 LOCALE_PATHS = [

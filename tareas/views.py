@@ -6,7 +6,10 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.paginator import Paginator
 
+@login_required
 def lista_tareas(request):
+    print("Usuario:", request.user)
+
     tareas = Tarea.objects.filter(usuario=request.user)
 
     # Búsqueda
@@ -56,7 +59,7 @@ def agregar_tarea(request):
     
     return render(request, 'tareas/agregar_tarea.html', {'form': form})
 
-login_required
+@login_required
 def completar_tarea(request, tarea_id):
     tarea = get_object_or_404(Tarea, id=tarea_id, usuario=request.user)
     tarea.completada = True
